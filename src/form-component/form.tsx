@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
 import './form.css';
 
@@ -6,32 +6,54 @@ type TFormData = {
   name: string;
   email: string;
   messageForName: string;
+  education: {
+    kindergarten: string;
+    school: string;
+    university: string;
+  };
+  phoneNumber: string[];
+  phNumbers: {
+    number: string;
+  }[];
 };
 
 const FormComponent = () => {
   const { register, handleSubmit, reset, control, formState } =
     useForm<TFormData>(
+      // {
+      //   defaultValues: async () => {
+      //     const response = await fetch(
+      //       'https://jsonplaceholder.typicode.com/users/1'
+      //     );
+      //     const data = await response.json();
+      //     return {
+      //       name: 'Andrii',
+      //       email: data.email,
+      //       messageForName: data.name
+      //     };
+      //   }
+      // }
+
       {
-        defaultValues: async () => {
-          const response = await fetch(
-            'https://jsonplaceholder.typicode.com/users/1'
-          );
-          const data = await response.json();
-          return {
-            name: 'Andrii',
-            email: data.email,
-            messageForName: data.name
-          };
+        defaultValues: {
+          name: 'Andrii',
+          email: '',
+          messageForName: '',
+          education: {
+            kindergarten: '',
+            school: '',
+            university: ''
+          },
+          phoneNumber: ['', ''],
+          phNumbers: [{ number: '' }]
         }
       }
-      // {
-      // defaultValues: {
-      //   name: 'Andrii',
-      //   email: 'andriy@gmail.com',
-      //   messageForName: ''
-      // }}
     );
   const { errors } = formState;
+  const { fields, append, remove } = useFieldArray({
+    name: 'phNumbers',
+    control
+  });
 
   const handleFormSubmit = (data: TFormData) => {
     console.log('Form submitted with data:', data);
@@ -49,7 +71,7 @@ const FormComponent = () => {
             required: 'Username is required'
           })}
         />
-        <h3 className={'error'}>{errors.name?.message}</h3>
+        <p className={'error'}>{errors.name?.message}</p>
 
         <label htmlFor="email">Email:</label>
         <input
@@ -81,7 +103,7 @@ const FormComponent = () => {
             }
           })}
         />
-        <h3 className={'error'}>{errors.email?.message}</h3>
+        <p className={'error'}>{errors.email?.message}</p>
 
         <textarea
           {...register('messageForName', {
@@ -93,7 +115,79 @@ const FormComponent = () => {
           rows={10}
           cols={10}
         />
-        <h3 className={'error'}>{errors.messageForName?.message}</h3>
+        <p className={'error'}>{errors.messageForName?.message}</p>
+
+        <label htmlFor="kindergarten">Kindergarten:</label>
+        <input
+          type="text"
+          id="kindergarten"
+          {...register('education.kindergarten', {
+            required: 'Kindergarten is required'
+          })}
+        />
+        <p className={'error'}>{errors.education?.kindergarten?.message}</p>
+
+        <label htmlFor="school">School:</label>
+        <input
+          type="text"
+          id="school"
+          {...register('education.school', { required: 'School is required' })}
+        />
+        <p className={'error'}>{errors.education?.school?.message}</p>
+
+        <label htmlFor="university">University:</label>
+        <input
+          type="text"
+          id="university"
+          {...register('education.university', {
+            required: 'University is required'
+          })}
+        />
+        <p className={'error'}>{errors.education?.university?.message}</p>
+
+        <label htmlFor="primaryPhone">Primary phone number:</label>
+        <input
+          type="text"
+          id="primaryPhone"
+          {...register('phoneNumber.0', {
+            required: 'Primary phone is required'
+          })}
+        />
+        <p className={'error'}>{errors.phoneNumber?.[0]?.message}</p>
+
+        <label htmlFor="secondaryPhone">Secondary phone number:</label>
+        <input
+          type="text"
+          id="secondaryPhone"
+          {...register('phoneNumber.1', {
+            required: 'Secondary phone is required'
+          })}
+        />
+        <p className={'error'}>{errors.phoneNumber?.[1]?.message}</p>
+
+        <div>
+          <label>List of phone numbers</label>
+          <div>
+            {fields.map((field, index) => {
+              return (
+                <div key={field.id}>
+                  <input
+                    type="text"
+                    {...register(`phNumbers.${index}.number` as const)}
+                  />
+                  {index > 0 && (
+                    <button type={'button'} onClick={() => remove(index)}>
+                      Remove
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            <button type={'button'} onClick={() => append({ number: '' })}>
+              Append number
+            </button>
+          </div>
+        </div>
 
         <div className="button-wrapper">
           <button type="submit">Submit</button>
