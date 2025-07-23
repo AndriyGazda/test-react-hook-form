@@ -12,9 +12,12 @@ type TFormData = {
     university: string;
   };
   phoneNumber: string[];
-  phNumbers: {
-    number: string;
-  }[];
+  // phNumbers: {
+  //   number: string;
+  // }[];
+  taskAdd: {
+    task: string;
+  }[]
 };
 
 const FormComponent = () => {
@@ -45,13 +48,14 @@ const FormComponent = () => {
             university: ''
           },
           phoneNumber: ['', ''],
-          phNumbers: [{ number: '' }]
+          // phNumbers: [{ number: '' }],
+          taskAdd: [{task:''}]
         }
       }
     );
   const { errors } = formState;
   const { fields, append, remove } = useFieldArray({
-    name: 'phNumbers',
+    name: 'taskAdd',
     control
   });
 
@@ -105,17 +109,17 @@ const FormComponent = () => {
         />
         <p className={'error'}>{errors.email?.message}</p>
 
-        <textarea
-          {...register('messageForName', {
-            required: {
-              value: true,
-              message: 'Message is required'
-            }
-          })}
-          rows={10}
-          cols={10}
-        />
-        <p className={'error'}>{errors.messageForName?.message}</p>
+        {/*<textarea*/}
+        {/*  {...register('messageForName', {*/}
+        {/*    required: {*/}
+        {/*      value: true,*/}
+        {/*      message: 'Message is required'*/}
+        {/*    }*/}
+        {/*  })}*/}
+        {/*  rows={10}*/}
+        {/*  cols={10}*/}
+        {/*/>*/}
+        {/*<p className={'error'}>{errors.messageForName?.message}</p>*/}
 
         <label htmlFor="kindergarten">Kindergarten:</label>
         <input
@@ -166,28 +170,50 @@ const FormComponent = () => {
         <p className={'error'}>{errors.phoneNumber?.[1]?.message}</p>
 
         <div>
-          <label>List of phone numbers</label>
+          <label>List of task</label>
           <div>
-            {fields.map((field, index) => {
-              return (
-                <div key={field.id}>
-                  <input
-                    type="text"
-                    {...register(`phNumbers.${index}.number` as const)}
-                  />
-                  {index > 0 && (
-                    <button type={'button'} onClick={() => remove(index)}>
-                      Remove
-                    </button>
-                  )}
-                </div>
-              );
+            {fields.map((task, index)=> {
+              return (<div                   key={task.id}
+              >
+                <input
+                  type="text"
+                  {...register(`taskAdd.${index}.task` as const)}/>
+                { index > 0 &&
+                  <button type = "button"
+                         onClick = {() => remove(index)}> Remove task</button>
+                }
+              </div>)
             })}
-            <button type={'button'} onClick={() => append({ number: '' })}>
-              Append number
-            </button>
+
+            <button type="button" onClick={()=> append({task: ""})}>Add new Task</button>
           </div>
         </div>
+
+
+        {/*<div>*/}
+        {/*  <label>List of phone numbers</label>*/}
+        {/*  <div>*/}
+        {/*    {fields.map((field, index) => {*/}
+        {/*      return (*/}
+        {/*        <>*/}
+        {/*          <input*/}
+        {/*            key={field.id}*/}
+        {/*            type="text"*/}
+        {/*            {...register(`phNumbers.${index}.number` as const)}*/}
+        {/*          />*/}
+        {/*          {index > 0 && (*/}
+        {/*            <button type={'button'} onClick={() => remove(index)}>*/}
+        {/*              Remove*/}
+        {/*            </button>*/}
+        {/*          )}*/}
+        {/*        </>*/}
+        {/*      );*/}
+        {/*    })}*/}
+        {/*    <button type={'button'} onClick={() => append({ number: '' })}>*/}
+        {/*      Append number*/}
+        {/*    </button>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
 
         <div className="button-wrapper">
           <button type="submit">Submit</button>
