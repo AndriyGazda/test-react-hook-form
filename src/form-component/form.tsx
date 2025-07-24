@@ -66,7 +66,7 @@ const FormComponent = () => {
       }
     }
   );
-  const { errors, touchedFields, dirtyFields} = formState;
+  const { errors, touchedFields, dirtyFields } = formState;
   // const watchName = watch("name")
   // const { fields, append, remove } = useFieldArray({
   //   name: 'taskAdd',
@@ -77,10 +77,11 @@ const FormComponent = () => {
     console.log('Form submitted with data:', data);
     reset();
   };
-  console.log(touchedFields, dirtyFields)
+  console.log(touchedFields, dirtyFields);
 
   const handleGetValues = () => console.log(getValues(['name', 'email']));
-  const handleSetValue = () => console.log(setValue("name", "dsadsa"), setValue("age", 123));
+  const handleSetValue = () =>
+    console.log(setValue('name', 'dsadsa'), setValue('age', 123));
 
   return (
     <div className={'form-container'}>
